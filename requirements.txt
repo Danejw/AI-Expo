@@ -138,6 +138,7 @@ multidict==6.0.4
 murmurhash==1.0.9
 mypy-extensions==1.0.0
 mysql==0.0.3
+mysqlclient==2.2.0
 Naked==0.1.32
 nest-asyncio==1.5.7
 nltk==3.8.1
