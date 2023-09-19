@@ -19,7 +19,6 @@ from chats.Programmer_Chat import main as Programmer
 from chats.Yoda_Chat import main as Yoda
 from chats.AgentWithTools_Chat import main as Auto
 
-
 from langchain.embeddings import OpenAIEmbeddings
 
     
