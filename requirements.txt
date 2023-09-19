@@ -29,3 +29,5 @@ websockets==11.0.3
 python-jose==3.3.0
 PyJWT==2.8.0
 passlib==1.7.4
+chroma-hnswlib==0.7.2
+chromadb==0.4.7
