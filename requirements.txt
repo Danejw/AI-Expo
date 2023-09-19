@@ -209,7 +209,6 @@ python-multipart==0.0.6
 python-socketio==5.8.0
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
-pywin32==306
 PyYAML==6.0.1
 pyyaml_env_tag==0.1
 qdrant-client==0.11.10
