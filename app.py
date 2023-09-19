@@ -1,5 +1,4 @@
 import openai
-import auth
 import streamlit as st
 from database.user_repository import UserRepository
 from models.UserModels import User, UserRegistration
