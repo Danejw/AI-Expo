@@ -74,6 +74,8 @@ def main():
 
         st.warning("Disclaimer: These AIs generate responses based on a diverse range of text data and may incorporate information, opinions, or ideas from various sources, including publicly available content. The responses provided are computer-generated and should be considered as interpretations or simulations of human conversation. They may not always reflect the most current or accurate information and should not be relied upon as authoritative sources. Users are encouraged to exercise critical thinking, verify information independently, and consult trusted, up-to-date sources for specific or critical matters.")
         
+        st.markdewn("Make sure to enter your OpenAI API key before attempting to go to the other pages.")
+        
         # Initialize OpenAI API key
         api_key = None
 
