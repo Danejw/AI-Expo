@@ -51,7 +51,7 @@ def main():
         st.session_state.history = ChatHistory(history=[])
             
     with st.sidebar:
-        selected = option_menu("Main Menu", ["Home", 'Auto', 'Aristotle', 'Bible', 'Naval Ravikant', 'Paul Graham', 'AlohaLani', 'Yoda', 'Story Creator', 'Character Creator', 'Environment Creator', 'Programmer'], 
+        selected = option_menu("Main Menu", ["Home", 'Auto', 'Bible', 'Naval Ravikant', 'Paul Graham', 'AlohaLani', 'Yoda', 'Story Creator', 'Character Creator', 'Environment Creator', 'Programmer'], 
             icons=['house'], orientation="vertical")
         
     

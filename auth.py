@@ -7,8 +7,10 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from database.user_repository import UserRepository
 from models.UserModels import User, UserInDB, UserRegistration, UserRegistrationResponse, Token, TokenData
+import streamlit as st
 
-SECRET_KEY = "c9b7521ab7ff7fc87a0b34f5c5500ffe3fdeb7f923ed92470df62ab95c4eb960"
+
+DB_SECRET_KEY = st.secrets("DB_SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -51,12 +53,12 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, DB_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def verify_token(token: str, credentials_exception):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, DB_SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -66,7 +68,7 @@ def verify_token(token: str, credentials_exception):
 def get_user_by_token(token: str):
         # Verify and decode the token to get the username
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(token, DB_SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")           
             if username is None:
                 raise HTTPException(status_code=400, detail="Token does not contain a valid subject")
@@ -99,7 +101,7 @@ def register_new_user(user_data: UserRegistration):
     user_repo = UserRepository()
     
     # Check if user already exists
-    if user_data.username in db:
+    if user_data.username in user_repo:
         raise HTTPException(status_code=400, detail="Username already registered")
 
     # Hash the password
