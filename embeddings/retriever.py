@@ -1,22 +1,14 @@
-from abc import ABC, abstractmethod
 import csv
 from enum import Enum
-from io import StringIO
 import os
-from typing import Any, List
-from dotenv import load_dotenv
 from langchain.schema import Document
-from langchain.callbacks.manager import Callbacks
-import numpy as np
 
 import openai
 
-from langchain.chains import RetrievalQA
 from langchain.embeddings import OpenAIEmbeddings
 
 
 from langchain.document_loaders import CSVLoader, TextLoader, WebBaseLoader, PyPDFLoader, GoogleDriveLoader, DirectoryLoader
-import pandas as pd
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import requests
@@ -56,6 +48,7 @@ class Retriever():
         self.file_path = file_path
         self.k = k
         self.persist_directory = "data/vectorstore" + "_" + f"{self.file_path}"
+        self.github_directory = f"https://github.com/Danejw/AI-Expo/blob/master/data/vectorstore_/{self.file_path}/chroma.sqlite3"
     
     def load_csv(self, csv_file: str, column_name=None) -> list[str]:
 
@@ -105,33 +98,7 @@ class Retriever():
         pages = loader.load()
         return pages
     
-    # # load from github directory
-    # def load_embeddings_df_from_github(csv_path):        
-    #     # Construct the GitHub raw URL based on the relative file path
-    #     github_raw_url = f"https://github.com/Danejw/AI-Expo/tree/master/data/vectorstore_/{csv_path}"
-        
-    #     try:
-    #         # Fetch CSV content from the GitHub raw URL
-    #         response = requests.get(github_raw_url)
-            
-    #         if response.status_code == 200:
-    #             csv_content = response.text
-                
-    #             # Read the CSV data from the content
-    #             embeddings_df = pd.read_csv(StringIO(csv_content), index_col=0)
-                
-    #             # Convert the string representation of lists to actual lists
-    #             embeddings_df['embeddings'] = embeddings_df['embeddings'].apply(lambda x: np.array(eval(x)))
-                
-    #             return embeddings_df
-    #         else:
-    #             print(f"Failed to fetch CSV data from {github_raw_url}. Status code: {response.status_code}")
-    #             return None
-    #     except Exception as e:
-    #         print(f"An error occurred while fetching CSV data: {str(e)}")
-    #         return None
 
-    
     def parse_filepath_to_filetype(self, file_path: str) -> FileType:
         extension = os.path.splitext(file_path)[1]
         if extension == '.csv':
@@ -193,8 +160,28 @@ class Retriever():
         db.persist()
         return db
         
-    def load_from_persisted_vectorstore(self) -> Chroma:
-        db = Chroma(persist_directory=self.persist_directory, embedding_function=self.embeddings_model)
+        # load from github directory
+    def load_from_github(self, file_path) -> Chroma:                
+        try:
+            # Fetch CSV content from the GitHub raw URL
+            response = requests.get(file_path)
+            
+            if response.status_code == 200:
+                db = Chroma(persist_directory=file_path, embedding_function=self.embeddings_model)
+                
+                return db
+            else:
+                print(f"Failed to fetch data from {file_path}. Status code: {response.status_code}")
+                return None
+        except Exception as e:
+            print(f"An error occurred while fetching data: {str(e)}")
+            return None
+  
+    def load_from_persisted_vectorstore(self, hosted: bool) -> Chroma:
+        if hosted:
+            db = self.load_from_github(self.github_directory)
+        else:    
+            db = Chroma(persist_directory=self.persist_directory, embedding_function=self.embeddings_model)
         return db
     
     def run(self, query:str) -> ChatMessage:
