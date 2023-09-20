@@ -49,6 +49,7 @@ class Retriever():
         self.k = k
         self.persist_directory = "data/vectorstore" + "_" + f"{self.file_path}"
         self.github_directory = f"https://github.com/Danejw/AI-Expo/blob/master/data/vectorstore_/{self.file_path}/chroma.sqlite3"
+        self.is_hosted = True
     
     def load_csv(self, csv_file: str, column_name=None) -> list[str]:
 
@@ -188,7 +189,7 @@ class Retriever():
         # if the vector store path does not exist, create the vectorstore and persist it
         if os.path.exists(self.persist_directory):
             # load vectore store
-            db = self.load_from_persisted_vectorstore()       
+            db = self.load_from_persisted_vectorstore(hosted=self.is_hosted) 
         else:
             split = self.load_file_and_split(self.file_path)   
             db = self.persist_vectorstore(split, self.persist_directory)  
