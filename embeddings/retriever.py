@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 import csv
 from enum import Enum
+from io import StringIO
 import os
 from typing import Any, List
 from dotenv import load_dotenv
 from langchain.schema import Document
 from langchain.callbacks.manager import Callbacks
+import numpy as np
 
 import openai
 
@@ -17,6 +19,7 @@ from langchain.document_loaders import CSVLoader, TextLoader, WebBaseLoader, PyP
 import pandas as pd
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import requests
 
 
 from models.ChatMessage import ChatMessage
@@ -101,6 +104,33 @@ class Retriever():
         loader = DirectoryLoader(directory, extensions)
         pages = loader.load()
         return pages
+    
+    # # load from github directory
+    # def load_embeddings_df_from_github(csv_path):        
+    #     # Construct the GitHub raw URL based on the relative file path
+    #     github_raw_url = f"https://github.com/Danejw/AI-Expo/tree/master/data/vectorstore_/{csv_path}"
+        
+    #     try:
+    #         # Fetch CSV content from the GitHub raw URL
+    #         response = requests.get(github_raw_url)
+            
+    #         if response.status_code == 200:
+    #             csv_content = response.text
+                
+    #             # Read the CSV data from the content
+    #             embeddings_df = pd.read_csv(StringIO(csv_content), index_col=0)
+                
+    #             # Convert the string representation of lists to actual lists
+    #             embeddings_df['embeddings'] = embeddings_df['embeddings'].apply(lambda x: np.array(eval(x)))
+                
+    #             return embeddings_df
+    #         else:
+    #             print(f"Failed to fetch CSV data from {github_raw_url}. Status code: {response.status_code}")
+    #             return None
+    #     except Exception as e:
+    #         print(f"An error occurred while fetching CSV data: {str(e)}")
+    #         return None
+
     
     def parse_filepath_to_filetype(self, file_path: str) -> FileType:
         extension = os.path.splitext(file_path)[1]
